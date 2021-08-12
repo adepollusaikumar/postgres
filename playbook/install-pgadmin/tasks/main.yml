@@ -1,0 +1,18 @@
+---
+# tasks file for docker_dbnodes
+- name: Install PgAdmin4
+  community.docker.docker_container:
+    name: "pgadmin"
+    image: "dpage/pgadmin4"
+    hostname: "pgadmin"
+    ports: 
+      - "5000:80"
+    env:
+      PGADMIN_DEFAULT_EMAIL: "kumar6.uid@gmail.com" 
+      PGADMIN_DEFAULT_PASSWORD: "123456"
+    networks:
+      - name: "cluster_network"
+        ipv4_address: "172.18.0.10"
+    detach: yes
+    interactive: yes
+    tty: yes

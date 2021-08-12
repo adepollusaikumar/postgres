@@ -1,0 +1,29 @@
+---
+# tasks file for prerequisites
+- name: "apt-get update"
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    pkg: 
+    - ssh 
+    - mysql-client  
+    - docker.io 
+    - docker-compose 
+    - sudo
+    - vim
+    - ansible 
+    state: present
+
+- name: Install ansible collections
+  shell: ansible-galaxy collection install community.docker community.crypto community.postgresql
+
+- name: Start docker
+  systemd: state=started name=docker
+
+- name: Enable docker service
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no

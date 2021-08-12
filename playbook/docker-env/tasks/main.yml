@@ -1,0 +1,14 @@
+---
+#tasks file for docker-env
+- name: Create docker network
+  community.docker.docker_network:
+    name: cluster_network
+    ipam_config:
+      - subnet: 172.18.0.0/16
+
+- name: Build docker image for dbnodes
+  community.docker.docker_image:
+    name: postgres/postgresnode:1.0
+    build:
+      path: /vagrant/pgnodes
+    source: build

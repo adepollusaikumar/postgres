@@ -1,0 +1,9 @@
+---
+
+- hosts: localhost
+  roles:
+    - prerequisites
+    - docker-env
+    - ssh-keygen
+    - install-pgadmin
+    - docker-pgnodes

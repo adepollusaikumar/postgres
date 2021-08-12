@@ -1,0 +1,12 @@
+---
+# defaults file for docker_dbnodes
+dbnodes:
+  - { host: 'PGDBNODE01', ip: '172.18.0.11'}
+  - { host: 'PGDBNODE02', ip: '172.18.0.12'}
+  - { host: 'PGDBNODE03', ip: '172.18.0.13'}
+  - { host: 'PGDBNODE04', ip: '172.18.0.14'}
+
+slaves:
+  - { host: 'PGDBNODE01', ip: '172.18.0.11',user: 'root',password: 'secret'}
+  - { host: 'PGDBNODE02', ip: '172.18.0.12',user: 'root',password: 'secret'}
+  - { host: 'PGDBNODE03', ip: '172.18.0.13',user: 'root',password: 'secret'}

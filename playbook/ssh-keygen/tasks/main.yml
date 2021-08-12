@@ -1,0 +1,8 @@
+---
+# tasks file for ssh-keygen
+- name: Generate SSH keys for nodes communication
+  community.crypto.openssh_keypair:
+    path: /root/.ssh/id_rsa
+    mode: '0644'
+    state: present
+    force: yes

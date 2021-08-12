@@ -1,0 +1,49 @@
+---
+# tasks file for docker_dbnodes
+- name: Create and Start dbnode containers
+  community.docker.docker_container:
+    name: "{{ item.host }}"
+    image: "postgres/postgresnode:1.0"
+    hostname: "{{ item.host }}"
+    networks:
+      - name: "cluster_network"
+        ipv4_address: "{{ item.ip }}"
+    env:
+      POSTGRES_PASSWORD: "secret"
+    detach: yes
+    interactive: yes
+    tty: yes
+  with_items: "{{ dbnodes }}"
+
+
+- name: 1 - Setting up ssh for docker db containers
+  shell: 'docker exec "{{ item.host }}"  mkdir -p /root/.ssh/ '
+  with_items: "{{ dbnodes }}"
+
+- name: 2 - Setting up ssh for docker db containers
+  shell: 'docker exec "{{ item.host }}"  touch /root/.ssh/authorized_keys '
+  with_items: "{{ dbnodes }}"
+
+- name: 3 - Setting up ssh for docker db containers
+  shell: 'docker cp /root/.ssh/id_rsa.pub  "{{ item.host }}":/root/.ssh/authorized_keys'
+  with_items: "{{ dbnodes }}"
+
+- name: 4 - Setting up ssh for docker db containers
+  shell: 'docker exec "{{ item.host }}" service ssh start '
+  with_items: "{{ dbnodes }}"
+
+
+- name: Check if PostgreSQL database is initialized.
+  shell: 'docker exec "{{ item.host }}" [ -f /var/lib/postgresql/data/PG_VERSION ] && echo "0" || echo "1"'
+  with_items: "{{ dbnodes }}"
+
+- name: Ensure PostgreSQL database is initialized.
+  shell: 'docker exec --user postgres "{{ item.host }}" /usr/lib/postgresql/13/bin/initdb -D /var/lib/postgresql/data/'
+  vars:
+    ansible_ssh_pipelining: true
+  with_items: "{{ dbnodes }}"
+
+- name: Start Postgres
+  shell: 'docker exec --user postgres "{{ item.host }}" /usr/lib/postgresql/13/bin/pg_ctl  -D /var/lib/postgresql/data start '
+  with_items: "{{ dbnodes }}"
+
